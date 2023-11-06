@@ -21,6 +21,9 @@ public class App {
             System.out.print("명령) ");
             String wt = sc.nextLine();
 
+            Rq rq = new Rq(wt);
+
+            System.out.println(rq.getAction());
 
             if (wt.equals("종료")) {
                 break;
@@ -30,14 +33,16 @@ public class App {
             } else if (wt.equals("목록")) {
                 registerList();
 
-            } else if(wt.equals("삭제")){
-
+            } else if(wt.startsWith("삭제")){
+                registerRemove(wt);
+            } else if(wt.startsWith("수정")){
+                registerModify(wt);
             }
 
         }
     }
 
-    public void register() {
+    void register() {
         System.out.print("명언 : ");
         String title = sc.nextLine();
 
@@ -67,5 +72,52 @@ public class App {
             System.out.printf("%d / %s / %s\n", quotation.num, quotation.author, quotation.title);
         }
 
+    }
+    void registerRemove(String wt){
+
+        int num = getParamAsInt(wt,"num",0);
+
+        if( num == 0) {
+            System.out.println("id를 입력해주세요");
+            return;
+        }
+        System.out.printf("%d번 명언을 삭제합니다.\n",num);
+
+    }
+    void registerModify(String wt) {
+
+        int num = getParamAsInt(wt, "num",0);
+
+        if( num == 0) {
+            System.out.println("id를 수정해주세요");
+            return;
+        }
+        System.out.printf("%d번 명언을 수정합니다.\n", num);
+        }
+    int getParamAsInt(String wt,String paramName, int defaultValue){
+        String[] wtBits = wt.split("\\?", 2);
+        String queryString = wtBits[1];
+
+        String[] queryStringBits =queryString.split("&");
+
+        for(int i = 0; i< queryStringBits.length; i++) {
+            String queryParamStr = queryStringBits[i];
+
+            String[] queryParamStrBits = queryParamStr.split("=", 2);
+
+            String _paramName = queryParamStrBits[0];
+            String paramValue = queryParamStrBits[1];
+
+            if(_paramName.equals(paramName)) {
+                try {
+                    return Integer.parseInt(paramValue);
+                }
+                catch (NumberFormatException e){
+                    return defaultValue;
+
+                }
+            }
+        }
+        return defaultValue;
     }
 }
