@@ -24,6 +24,7 @@ public class App {
             Rq rq = new Rq(wt);
 
             System.out.println(rq.getAction());
+            System.out.println(rq.getParamAsInt("num",0));
 
             if (wt.equals("종료")) {
                 break;
