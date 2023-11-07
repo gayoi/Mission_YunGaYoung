@@ -5,117 +5,97 @@ import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    Scanner sc;
-    int lastQuotation;
+    Scanner scanner;
+    int lastQuotationId;
     List<Quotation> quotations;
-
     App() {
-        sc = new Scanner(System.in);
-        lastQuotation = 0;
+        scanner = new Scanner(System.in);
+        lastQuotationId = 0;
         quotations = new ArrayList<>();
     }
-    public void run() {
+    void run() {
         System.out.println("== 명언 앱 ==");
-
-        while(true) {
+        while (true) {
             System.out.print("명령) ");
-            String wt = sc.nextLine();
 
-            Rq rq = new Rq(wt);
+            String cmd = scanner.nextLine();
 
-            System.out.println(rq.getAction());
-            System.out.println(rq.getParamAsInt("num",0));
+            Rq rq = new Rq(cmd);
 
-            if (wt.equals("종료")) {
+            System.out.println("rq.getAction : " + rq.getAction());
+            System.out.println("rq.getParamAsInt : " + rq.getParamAsInt("id", 0));
+
+            if (cmd.equals("종료")) {
                 break;
-            } else if (wt.equals("등록")) {
-                register();
+            } else if (cmd.equals("등록")) {
 
-            } else if (wt.equals("목록")) {
-                registerList();
-
-            } else if(wt.startsWith("삭제")){
-                registerRemove(wt);
-            } else if(wt.startsWith("수정")){
-                registerModify(wt);
+                actionWrite();
+            } else if (cmd.equals("목록")) {
+                actionList();
+            } else if (cmd.startsWith("삭제?")) {
+                actionRemove(cmd);
+            } else if (cmd.startsWith("수정?")) {
+                actionModify(cmd);
             }
-
         }
     }
-
-    void register() {
+    void actionWrite() {
         System.out.print("명언 : ");
-        String title = sc.nextLine();
+        String content = scanner.nextLine();
 
         System.out.print("작가 : ");
-        String author = sc.nextLine();
+        String authorName = scanner.nextLine();
 
-        lastQuotation++;
+        lastQuotationId++;
+        int id = lastQuotationId;
 
-        int num = lastQuotation;
-
-        Quotation quotation = new Quotation(num, title, author);
+        Quotation quotation = new Quotation(id, content, authorName);
         quotations.add(quotation);
 
-        System.out.println(lastQuotation + "번 명언이 등록되었습니다.");
+        System.out.printf("%d번 명언이 등록되었습니다.\n", lastQuotationId);
     }
-    void registerList() {
+    void actionList() {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
-        //System.out.println(quotations.size() + "/" + author + "/" + title);
-
-        if(quotations.isEmpty()){
+        if (quotations.isEmpty())
             System.out.println("등록된 명언이 없습니다.");
+        for (int i = quotations.size() - 1; i >= 0; i--) {
+            Quotation quotation = quotations.get(i);
+            System.out.printf("%d / %s / %s\n", quotation.id, quotation.authorName, quotation.content);
         }
-
-        for(int i =quotations.size()-1; i >=  0; i--){
-            Quotation quotation =quotations.get(i);
-            System.out.printf("%d / %s / %s\n", quotation.num, quotation.author, quotation.title);
-        }
-
     }
-    void registerRemove(String wt){
-
-        int num = getParamAsInt(wt,"num",0);
-
-        if( num == 0) {
-            System.out.println("id를 입력해주세요");
-            return;
+    void actionRemove(String cmd) {
+        int id = getParamAsInt(cmd, "id", 0);
+        if (id == 0) {
+            System.out.println("id를 정확히 입력해주세요.");
+            return; // 함수를 끝낸다.
         }
-        System.out.printf("%d번 명언을 삭제합니다.\n",num);
-
+        System.out.printf("%d번 명언을 삭제합니다.\n", id);
     }
-    void registerModify(String wt) {
-
-        int num = getParamAsInt(wt, "num",0);
-
-        if( num == 0) {
-            System.out.println("id를 수정해주세요");
-            return;
+    void actionModify(String cmd) {
+        int id = getParamAsInt(cmd, "id", 0);
+        if (id == 0) {
+            System.out.println("id를 정확히 입력해주세요.");
+            return; // 함수를 끝낸다.
         }
-        System.out.printf("%d번 명언을 수정합니다.\n", num);
-        }
-    int getParamAsInt(String wt,String paramName, int defaultValue){
-        String[] wtBits = wt.split("\\?", 2);
-        String queryString = wtBits[1];
-
-        String[] queryStringBits =queryString.split("&");
-
-        for(int i = 0; i< queryStringBits.length; i++) {
+        System.out.printf("%d번 명언을 수정합니다.\n", id);
+    }
+    int getParamAsInt(String cmd, String paramName, int defaultValue) {
+        String[] cmdBits = cmd.split("\\?", 2);
+        String queryString = cmdBits[1];
+        String[] queryStringBits = queryString.split("&");
+        for (int i = 0; i < queryStringBits.length; i++) {
             String queryParamStr = queryStringBits[i];
-
             String[] queryParamStrBits = queryParamStr.split("=", 2);
-
             String _paramName = queryParamStrBits[0];
             String paramValue = queryParamStrBits[1];
-
-            if(_paramName.equals(paramName)) {
+            if (_paramName.equals(paramName)) {
                 try {
+                    // 문제가 없을 경우
                     return Integer.parseInt(paramValue);
-                }
-                catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
+                    // 문제가 생긴 경우
                     return defaultValue;
-
                 }
             }
         }

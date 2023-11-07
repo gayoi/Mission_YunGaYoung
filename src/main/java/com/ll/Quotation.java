@@ -1,13 +1,13 @@
 package com.ll;
 
 public class Quotation {
-    int num;
-    String title;
-    String author;
+    int id;
+    String content;
+    String authorName;
 
-    public Quotation(int num, String title, String author) {
-        this.num = num;
-        this.title = title;
-        this.author = author;
+    public Quotation(int id, String content, String authorName) {
+        this.id = id;
+        this.content = content;
+        this.authorName = authorName;
     }
 }
