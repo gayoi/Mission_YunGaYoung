@@ -36,7 +36,8 @@ public class App {
                     actionModify(rq);
                     break;
                 case "종료":
-                    return;
+                    actionRestart();
+                    //return;
 
             }
 
@@ -64,7 +65,7 @@ public class App {
             System.out.println("등록된 명언이 없습니다.");
         for (int i = quotations.size() - 1; i >= 0; i--) {
             Quotation quotation = quotations.get(i);
-            System.out.printf("%d / %s / %s\n", quotation.id, quotation.authorName, quotation.content);
+            System.out.printf("%d / %s / %s\n", quotation.getId(), quotation.getAuthorName(), quotation.getContent());
         }
     }
     private void actionRemove(Rq rq) {
@@ -89,7 +90,7 @@ public class App {
     private int findQuotationIndexById(int id) {
         for (int i = 0; i < quotations.size(); i++) {
             Quotation quotation = quotations.get(i);
-            if (quotation.id == id){
+            if (quotation.getId() == id){
                 return i; // 내가 찾으려는 아이디를 찾았다
             }
         }
@@ -110,18 +111,25 @@ public class App {
         }
         Quotation quotation =quotations.get(index);
 
-        System.out.printf("명언(기존) : %s\n",quotation.content);
+        System.out.printf("명언(기존) : %s\n",quotation.getContent());
         System.out.print("명언 :");
         String content = scanner.nextLine();
 
-        System.out.printf("작가(기존) : %s\n",quotation.authorName);
+        System.out.printf("작가(기존) : %s\n",quotation.getAuthorName());
         System.out.print("작가 :");
         String authorName = scanner.nextLine();
 
-        quotation.content = content;
-        quotation.authorName = authorName;
+        quotation.setContent(content);
+        quotation.setAuthorName(authorName);
 
         System.out.printf ("%d번 명언을 수정되었습니다.\n",id);
+    }
+    private void actionRestart(){
+        System.out.println(" ");
+        System.out.println("프로그램 다시 시작 ...");
+        System.out.println(" ");
+        System.out.println("== 명언 앱 ==");
+
     }
 
 }
